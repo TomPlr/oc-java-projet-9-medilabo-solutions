@@ -8,6 +8,7 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
+import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.path;
 
 @SpringBootApplication
 public class MsGatewayApplication {
@@ -18,6 +19,6 @@ public class MsGatewayApplication {
 
 	@Bean
 	public RouterFunction<ServerResponse> getRoute() {
-		return route().GET("/patient/all", http("http://localhost:8081/")).build();
+		return route().route(path("/patient/**"),http("http://localhost:8081/")).build();
 	}
 }
