@@ -1,6 +1,7 @@
 package org.medilabo.mspatient.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Patient {
-
+public class User {
     @Id
     private int id;
 
@@ -19,13 +19,12 @@ public class Patient {
     @NotBlank(message = "The first name must be filled")
     private String firstName;
 
-    @NotBlank(message = "The date of birth must be filled")
-    private String dateOfBirth;
+    @NotBlank(message = "The email must be filled")
+    private String email;
 
-    @NotBlank(message = "The gender must be filled")
-    private String gender;
+    @NotBlank(message = "The password must be filled")
+    private String password;
 
-    private String address;
-
-    private String phoneNumber;
+    @NotBlank(message = "The role must be filled")
+    private String role;
 }

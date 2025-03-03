@@ -2,10 +2,15 @@ package org.medilabo.mspatient.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -28,46 +33,35 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> {
-            auth.anyRequest().permitAll();
-        }).csrf(AbstractHttpConfigurer::disable).build();
-//        return http.authorizeHttpRequests(auth -> {
-//                    auth.requestMatchers("/register","/user/registration","/styles/**").permitAll();
-//                    auth.requestMatchers("/admin").hasRole("ADMIN");
-//                    auth.anyRequest().authenticated();
-//                })
-//                .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer
-//                        .loginPage("/login")
-//                        .usernameParameter("email")
-//                        .permitAll()
-//                        .defaultSuccessUrl("/add-connection", true))
-//                .logout(Customizer.withDefaults())
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .build();
+                    auth.requestMatchers("/patient").hasRole("MANAGER");
+                    auth.anyRequest().authenticated();
+                })
+                .httpBasic(withDefaults())
+                .csrf(AbstractHttpConfigurer::disable).build();
     }
 
-//    /**
-//     * Provides a BCryptPasswordEncoder bean.
-//     *
-//     * @return a new instance of BCryptPasswordEncoder
-//     */
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    /**
-//     * Configures and provides an AuthenticationManager bean.
-//     *
-//     * @param http the HttpSecurity object
-//     * @param bCryptPasswordEncoder the BCryptPasswordEncoder bean
-//     *
-//     * @return the configured AuthenticationManager
-//     * @throws Exception if an error occurs during configuration
-//     */
-//    @Bean
-//    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
-//        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-//        return authenticationManagerBuilder.build();
-//    }
+    /**
+     * Provides a BCryptPasswordEncoder bean.
+     *
+     * @return a new instance of BCryptPasswordEncoder
+     */
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * Configures and provides an AuthenticationManager bean.
+     *
+     * @param http                  the HttpSecurity object
+     * @param bCryptPasswordEncoder the BCryptPasswordEncoder bean
+     * @return the configured AuthenticationManager
+     * @throws Exception if an error occurs during configuration
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        return authenticationManagerBuilder.build();
+    }
 }
