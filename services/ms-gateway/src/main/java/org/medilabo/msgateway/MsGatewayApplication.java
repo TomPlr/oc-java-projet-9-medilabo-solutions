@@ -2,9 +2,12 @@ package org.medilabo.msgateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.ServerResponse;
+
+import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
+import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
 
 @SpringBootApplication
 public class MsGatewayApplication {
@@ -14,8 +17,7 @@ public class MsGatewayApplication {
 	}
 
 	@Bean
-	public RouteLocator routes(RouteLocatorBuilder builder) {
-		return builder.routes().build();
+	public RouterFunction<ServerResponse> getRoute() {
+		return route().GET("/patient/all", http("http://localhost:8081/")).build();
 	}
-
 }
