@@ -1,7 +1,8 @@
 package org.medilabo.mspatient.model;
 
-import jakarta.validation.constraints.NotBlank;
+import org.medilabo.mspatient.entity.Address;
 
-public record PatientModel(int id, String lastName, String firstName, String dateOfBirth, String gender, String address,
+public record PatientModel(int id, String lastName, String firstName, String dateOfBirth, String gender,
+                           Address address,
                            String phoneNumber) {
 }

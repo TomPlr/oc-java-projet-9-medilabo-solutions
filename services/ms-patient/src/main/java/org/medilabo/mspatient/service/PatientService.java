@@ -9,13 +9,13 @@ import java.util.Optional;
 
 public interface PatientService {
 
-    public Optional<Patient> findPatient(int id);
+    Optional<Patient> findPatient(int id);
 
-    public Iterable<Patient> findAll();
+    Iterable<Patient> findAll();
 
-    public PatientModel addPatient(PatientDto patientDto);
+    PatientModel addPatient(PatientDto patientDto);
 
-    public PatientModel updatePatient(int id,PatientDto patient);
+    PatientModel updatePatient(int id, PatientDto patient);
 
-    public GenericResponseModel deletePatient(int id);
+    GenericResponseModel deletePatient(int id);
 }

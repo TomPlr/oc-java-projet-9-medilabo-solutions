@@ -11,6 +11,7 @@ import lombok.Setter;
 public class Patient {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotBlank(message = "The last name must be filled")
@@ -25,7 +26,9 @@ public class Patient {
     @NotBlank(message = "The gender must be filled")
     private String gender;
 
-    private String address;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     private String phoneNumber;
 }

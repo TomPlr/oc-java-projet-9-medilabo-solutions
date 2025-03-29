@@ -1,11 +1,16 @@
 package org.medilabo.mspatient.service.impl;
 
+import jakarta.transaction.Transactional;
 import org.medilabo.mspatient.assembler.PatientAssembler;
 import org.medilabo.mspatient.dto.PatientDto;
+import org.medilabo.mspatient.entity.Address;
 import org.medilabo.mspatient.entity.Patient;
+import org.medilabo.mspatient.mapper.AddressMapper;
+import org.medilabo.mspatient.mapper.PatientMapper;
 import org.medilabo.mspatient.model.GenericResponseModel;
 import org.medilabo.mspatient.model.PatientModel;
 import org.medilabo.mspatient.repository.PatientRepository;
+import org.medilabo.mspatient.service.AddressService;
 import org.medilabo.mspatient.service.PatientService;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +21,18 @@ import java.util.Optional;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientAssembler patientAssembler;
-    PatientRepository patientRepository;
+    private final PatientRepository patientRepository;
+    private final AddressMapper addressMapper;
+    private final PatientMapper patientMapper;
+    private final AddressService addressService;
 
-    public PatientServiceImpl(PatientRepository patientRepository, PatientAssembler patientAssembler) {
+    public PatientServiceImpl(PatientRepository patientRepository, PatientAssembler patientAssembler,
+            AddressMapper addressMapper, PatientMapper patientMapper, AddressService addressService) {
         this.patientRepository = patientRepository;
         this.patientAssembler = patientAssembler;
+        this.addressMapper = addressMapper;
+        this.patientMapper = patientMapper;
+        this.addressService = addressService;
     }
 
     @Override
@@ -35,29 +47,24 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientModel addPatient(PatientDto patientDto) {
-        Patient patientEntity = new Patient();
+        Address address = addressService.getOrCreateAddress(patientDto.address());
 
-        patientEntity.setFirstName(patientDto.firstName());
-        patientEntity.setLastName(patientDto.lastName());
-        patientEntity.setDateOfBirth(patientDto.dateOfBirth());
-        patientEntity.setGender(patientDto.gender());
-        patientEntity.setAddress(patientDto.address());
-        patientEntity.setPhoneNumber(patientDto.phoneNumber());
+        Patient patient = patientMapper.toEntity(patientDto);
+        patient.setAddress(address);
 
-
-        return patientAssembler.toModel(patientRepository.save(patientEntity));
+        return patientAssembler.toModel(patientRepository.save(patient));
     }
 
     @Override
+    @Transactional
     public PatientModel updatePatient(int id, PatientDto patientDto) {
-       Patient patientEntity = patientRepository.findById(id).orElseThrow(() -> new NoSuchElementException("This patient does not exist"));
+        // Find the existing patient
+        Patient patientEntity = patientRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("This patient does not exist"));
 
-       Optional.ofNullable(patientDto.firstName()).ifPresent(patientEntity::setFirstName);
-       Optional.ofNullable(patientDto.lastName()).ifPresent(patientEntity::setLastName);
-       Optional.ofNullable(patientDto.dateOfBirth()).ifPresent(patientEntity::setDateOfBirth);
-       Optional.ofNullable(patientDto.gender()).ifPresent(patientEntity::setGender);
-       Optional.ofNullable(patientDto.address()).ifPresent(patientEntity::setAddress);
-       Optional.ofNullable(patientDto.phoneNumber()).ifPresent(patientEntity::setPhoneNumber);
+        Address address = addressService.getOrCreateAddress(patientDto.address());
+
+        patientEntity.setAddress(address);
 
         return patientAssembler.toModel(patientRepository.save(patientEntity));
     }
@@ -67,7 +74,8 @@ public class PatientServiceImpl implements PatientService {
         patientRepository.deleteById(id);
 
         if (patientRepository.existsById(id)) {
-            return new GenericResponseModel(false, String.format("Error: Patient  n°%s have not been correctly deleted", id));
+            return new GenericResponseModel(false,
+                    String.format("Error: Patient  n°%s have not been correctly deleted", id));
         }
 
         return new GenericResponseModel(true, String.format("Patient n°%s have been correctly deleted", id));
