@@ -1,0 +1,110 @@
+[
+  {
+    "id": "67caf22ab9bda8fe4a1015be",
+    "patId": 1,
+    "patient": "TestNone",
+    "content": "Le patient déclare qu'il 'se sent très bien'"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015bf",
+    "patId": 1,
+    "patient": "TestNone",
+    "content": "Poids égal ou inférieur au poids recommandé"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c0",
+    "patId": 2,
+    "patient": "TestBorderline",
+    "content": "Le patient déclare qu'il ressent beaucoup de stress au travail"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c1",
+    "patId": 2,
+    "patient": "TestBorderline",
+    "content": "Il se plaint également que son audition est anormale dernièrement"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c2",
+    "patId": 2,
+    "patient": "TestBorderline",
+    "content": "Le patient déclare avoir fait une réaction aux médicaments au cours des 3 derniers mois"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c3",
+    "patId": 2,
+    "patient": "TestBorderline",
+    "content": "Il remarque également que son audition continue d'être anormale"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c4",
+    "patId": 3,
+    "patient": "TestInDanger",
+    "content": "Le patient déclare qu'il fume depuis peu"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c5",
+    "patId": 3,
+    "patient": "TestInDanger",
+    "content": "Le patient déclare qu'il est fumeur et qu'il a cessé de fumer l'année dernière"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c6",
+    "patId": 3,
+    "patient": "TestInDanger",
+    "content": "Il se plaint également de crises d’apnée respiratoire anormales"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c7",
+    "patId": 3,
+    "patient": "TestInDanger",
+    "content": "Tests de laboratoire indiquant un taux de cholestérol LDL élevé"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c8",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Le patient déclare qu'il lui est devenu difficile de monter les escaliers"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015c9",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Il se plaint également d’être essoufflé"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015ca",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Tests de laboratoire indiquant que les anticorps sont élevés"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015cb",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Réaction aux médicaments"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015cc",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Le patient déclare qu'il a mal au dos lorsqu'il reste assis pendant longtemps"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015cd",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Le patient déclare avoir commencé à fumer depuis peu"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015ce",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Hémoglobine A1C supérieure au niveau recommandé"
+  },
+  {
+    "id": "67caf22ab9bda8fe4a1015cf",
+    "patId": 4,
+    "patient": "TestEarlyOnset",
+    "content": "Taille, Poids, Cholestérol, Vertige et Réaction"
+  }
+]
