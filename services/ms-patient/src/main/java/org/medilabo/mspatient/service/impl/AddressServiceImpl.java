@@ -5,7 +5,7 @@ import org.medilabo.mspatient.entity.Address;
 import org.medilabo.mspatient.repository.AddressRepository;
 import org.medilabo.mspatient.service.AddressService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
 
 @Service
@@ -18,7 +18,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Transactional
     public Address getOrCreateAddress(AddressDto addressDto) {
         // First try to find an existing address
         Optional<Address> existingAddress = addressRepository.findByStreetAndCityAndPostalCode(

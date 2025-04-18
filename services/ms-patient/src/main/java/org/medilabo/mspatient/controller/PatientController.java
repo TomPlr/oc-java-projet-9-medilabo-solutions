@@ -46,13 +46,13 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-    @PatchMapping
-    public ResponseEntity<PatientModel> updatePatient(@RequestParam int patientId, @RequestBody PatientDto patient) {
-        return new ResponseEntity<>(patientService.updatePatient(patientId, patient), HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientModel> updatePatient(@PathVariable int id, @RequestBody PatientDto patient) {
+        return new ResponseEntity<>(patientService.updatePatient(id, patient), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<GenericResponseModel> deletePatient(@RequestParam int patientId) {
-        return new ResponseEntity<>(patientService.deletePatient(patientId), HttpStatus.OK);
+    public ResponseEntity<GenericResponseModel> deletePatient(@RequestParam int id) {
+        return new ResponseEntity<>(patientService.deletePatient(id), HttpStatus.OK);
     }
 }

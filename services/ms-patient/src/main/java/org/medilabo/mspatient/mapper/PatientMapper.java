@@ -1,8 +1,6 @@
 package org.medilabo.mspatient.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.medilabo.mspatient.dto.PatientDto;
 import org.medilabo.mspatient.entity.Patient;
 
@@ -10,4 +8,8 @@ import org.medilabo.mspatient.entity.Patient;
 public interface PatientMapper {
 
     Patient toEntity(PatientDto patientDto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "address", ignore = true)
+    void updatePatientFromDto(PatientDto dto, @MappingTarget Patient patient);
 }

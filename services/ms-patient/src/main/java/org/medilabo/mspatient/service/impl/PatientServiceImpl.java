@@ -1,11 +1,9 @@
 package org.medilabo.mspatient.service.impl;
 
-import jakarta.transaction.Transactional;
 import org.medilabo.mspatient.assembler.PatientAssembler;
 import org.medilabo.mspatient.dto.PatientDto;
 import org.medilabo.mspatient.entity.Address;
 import org.medilabo.mspatient.entity.Patient;
-import org.medilabo.mspatient.mapper.AddressMapper;
 import org.medilabo.mspatient.mapper.PatientMapper;
 import org.medilabo.mspatient.model.GenericResponseModel;
 import org.medilabo.mspatient.model.PatientModel;
@@ -22,15 +20,13 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientAssembler patientAssembler;
     private final PatientRepository patientRepository;
-    private final AddressMapper addressMapper;
     private final PatientMapper patientMapper;
     private final AddressService addressService;
 
     public PatientServiceImpl(PatientRepository patientRepository, PatientAssembler patientAssembler,
-            AddressMapper addressMapper, PatientMapper patientMapper, AddressService addressService) {
+                              PatientMapper patientMapper, AddressService addressService) {
         this.patientRepository = patientRepository;
         this.patientAssembler = patientAssembler;
-        this.addressMapper = addressMapper;
         this.patientMapper = patientMapper;
         this.addressService = addressService;
     }
@@ -56,14 +52,14 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    @Transactional
     public PatientModel updatePatient(int id, PatientDto patientDto) {
         // Find the existing patient
         Patient patientEntity = patientRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("This patient does not exist"));
 
-        Address address = addressService.getOrCreateAddress(patientDto.address());
+        patientMapper.updatePatientFromDto(patientDto, patientEntity);
 
+        Address address = addressService.getOrCreateAddress(patientDto.address());
         patientEntity.setAddress(address);
 
         return patientAssembler.toModel(patientRepository.save(patientEntity));
