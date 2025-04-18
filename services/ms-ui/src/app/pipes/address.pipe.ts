@@ -7,7 +7,7 @@ import { Address } from '../models/address.model';
 })
 export class AddressPipe implements PipeTransform {
   transform(address: Address | undefined): string {
-    if (!address) return '';
+    if (!address) return 'N/A';
     return `${address.street}, ${address.postalCode} ${address.city}`;
   }
 } 

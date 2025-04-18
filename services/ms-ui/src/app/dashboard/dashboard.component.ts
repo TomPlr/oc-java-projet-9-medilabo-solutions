@@ -20,10 +20,8 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-      this.isAuthenticated = !!user;
-    });
+    this.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    this.isAuthenticated = !!this.currentUser;
   }
 
   logout(): void {

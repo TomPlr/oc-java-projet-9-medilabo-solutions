@@ -30,7 +30,7 @@ export const routes: Routes = [
         component: PatientsListComponent
       },
       {
-        path: 'patients/:id',
+        path: 'patients/:patientId',
         component: PatientDetailComponent
       }
     ]

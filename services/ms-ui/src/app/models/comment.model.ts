@@ -1,6 +1,7 @@
 export interface Comment {
-  id: number;
-  date: string;
+  id?: number;
+  patientId: number;
+  date?: Date;
   content: string;
-  author: string;
+  createdBy: string;
 } 

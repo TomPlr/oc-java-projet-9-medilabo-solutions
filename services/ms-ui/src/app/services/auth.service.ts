@@ -6,13 +6,7 @@ import { User } from '../models/auth/user.model';
 import { LoginCredentials } from '../models/auth/login-credentials.model';
 import { RegisterCredentials } from '../models/auth/register-credentials.model';
 import { ConfigService } from './config.service';
-
-interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  token_type: string;
-}
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +19,6 @@ export class AuthService {
   private readonly clientSecret: string;
   private readonly redirectUri: string;
   
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
-  
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
 
@@ -38,11 +29,13 @@ export class AuthService {
     private configService: ConfigService
   ) {
     this.keycloakConfig = this.configService.getKeycloakConfig();
+    
     this.keycloakUrl = this.keycloakConfig.url;
     this.realm = this.keycloakConfig.realm;
     this.clientId = this.keycloakConfig.clientId;
     this.clientSecret = this.keycloakConfig.clientSecret;
     this.redirectUri = this.keycloakConfig.redirectUri;
+
     this.initializeAuth();
   }
 
@@ -52,8 +45,9 @@ export class AuthService {
     
     if (token) {
       this.tokenSubject.next(token);
-      this.getUserInfo();
       this.startRefreshTokenTimer();
+
+      this.getUserInfo();
     }
   }
 
@@ -65,7 +59,7 @@ export class AuthService {
     body.set('username', credentials.username);
     body.set('password', credentials.password);
     
-    return this.http.post<TokenResponse>(
+    return this.http.post<any>(
       `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`,
       body.toString(),
       { 
@@ -132,8 +126,7 @@ export class AuthService {
     this.stopRefreshTokenTimer();
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
-    this.tokenSubject.next(null);
-    this.currentUserSubject.next(null);
+    localStorage.removeItem('user');
     
     // Redirect to Keycloak logout endpoint
     const logoutUrl = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/logout`;
@@ -144,7 +137,7 @@ export class AuthService {
     window.location.href = `${logoutUrl}?${params.toString()}`;
   }
 
-  refreshToken(): Observable<TokenResponse> {
+  refreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refresh_token');
     if (!refreshToken) {
       return throwError(() => new Error('No refresh token available'));
@@ -156,7 +149,7 @@ export class AuthService {
     body.set('grant_type', 'refresh_token');
     body.set('refresh_token', refreshToken);
 
-    return this.http.post<TokenResponse>(
+    return this.http.post<any>(
       `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`,
       body.toString(),
       { 
@@ -176,11 +169,10 @@ export class AuthService {
     );
   }
 
-  private handleTokenResponse(response: TokenResponse): void {
+  private handleTokenResponse(response: any): void {
     localStorage.setItem('token', response.access_token);
     localStorage.setItem('refresh_token', response.refresh_token);
     this.tokenSubject.next(response.access_token);
-    this.getUserInfo();
     this.startRefreshTokenTimer(response.expires_in);
   }
 
@@ -217,8 +209,8 @@ export class AuthService {
     if (!token) return true;
 
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const expiry = payload.exp * 1000; // Convert to milliseconds
+      const payload = jwtDecode(token);
+      const expiry = payload.exp! * 1000;
       return Date.now() >= expiry;
     } catch (error) {
       console.error('Error checking token expiration:', error);
@@ -230,19 +222,19 @@ export class AuthService {
     const token = this.getToken();
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        const payload = jwtDecode(token) as any;
         const user: User = {
           id: payload.sub,
           username: payload.preferred_username,
           email: payload.email,
           firstName: payload.given_name,
           lastName: payload.family_name,
-          roles: payload.realm_access?.roles || []
+          roles: payload.resource_access?.["medilabo-auth"]?.roles || []
         };
-        this.currentUserSubject.next(user);
+        localStorage.setItem('user', JSON.stringify(user));
       } catch (error) {
         console.error('Error decoding token:', error);
-        this.currentUserSubject.next(null);
+        localStorage.removeItem('user');
       }
     }
   }
