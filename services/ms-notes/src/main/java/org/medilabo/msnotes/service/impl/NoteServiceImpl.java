@@ -7,6 +7,7 @@ import org.medilabo.msnotes.repository.NoteRepository;
 import org.medilabo.msnotes.service.NoteService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,17 +27,20 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note findNoteById(String id) {
+    public Note findById(String id) {
         return noteRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<Note> findAllNotesByPatId(int patId) {
-        return noteRepository.findAllByPatId(patId);
+    public List<Note> findAllByPatientId(int patId) {
+        return noteRepository.findAllByPatientId(patId);
     }
 
     @Override
     public Note addNote(NoteDto noteDto) {
-        return noteRepository.save(noteMapper.toEntity(noteDto));
+        Note note = noteMapper.toEntity(noteDto);
+        note.setDate(new Date());
+
+        return noteRepository.save(note);
     }
 }

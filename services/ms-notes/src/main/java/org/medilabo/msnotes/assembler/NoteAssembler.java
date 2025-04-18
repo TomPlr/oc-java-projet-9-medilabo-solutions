@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class NoteAssembler {
 
     public NoteModel toModel(Note note) {
-        return new NoteModel(note.getId(), note.getPatId(), note.getPatient(), note.getContent());
+        return new NoteModel(note.getId(), note.getPatientId(), note.getContent(), note.getDate(), note.getCreatedBy());
     }
 }

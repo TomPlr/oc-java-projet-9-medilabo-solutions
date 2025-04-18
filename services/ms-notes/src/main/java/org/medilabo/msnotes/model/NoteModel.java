@@ -1,4 +1,6 @@
 package org.medilabo.msnotes.model;
 
-public record NoteModel(String id, int patId, String patient, String content) {
+import java.util.Date;
+
+public record NoteModel(String id, int patientId, String content, Date date, String createdBy) {
 }

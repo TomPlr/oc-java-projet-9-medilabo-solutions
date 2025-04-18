@@ -5,16 +5,18 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @Document(collection = "note")
 public class Note {
 
     @Id
-    public String id;
+    String id;
 
-    public int patId;
-    public String patient;
-    public String content;
-
+    int patientId;
+    String content;
+    Date date;
+    String createdBy;
 }

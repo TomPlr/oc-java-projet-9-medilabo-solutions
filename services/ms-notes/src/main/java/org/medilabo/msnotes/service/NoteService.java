@@ -10,9 +10,9 @@ public interface NoteService {
 
     List<Note> findAllNotes();
 
-    Note findNoteById(String id);
+    Note findById(String id);
 
-    List<Note> findAllNotesByPatId(int patId);
+    List<Note> findAllByPatientId(int patientId);
 
     Note addNote(NoteDto noteDto);
 }

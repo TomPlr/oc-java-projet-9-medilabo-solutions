@@ -1,4 +1,4 @@
 package org.medilabo.msnotes.dto;
 
-public record NoteDto(int patId, String patient, String content) {
+public record NoteDto(int patientId, String content, String createdBy) {
 }

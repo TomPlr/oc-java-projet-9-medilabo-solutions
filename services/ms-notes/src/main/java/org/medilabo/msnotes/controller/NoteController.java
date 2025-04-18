@@ -28,13 +28,13 @@ public class NoteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NoteModel> findNoteById(@PathVariable String id) {
-        return new ResponseEntity<>(noteAssembler.toModel(noteService.findNoteById(id)), HttpStatus.OK);
+    public ResponseEntity<NoteModel> findById(@PathVariable String id) {
+        return new ResponseEntity<>(noteAssembler.toModel(noteService.findById(id)), HttpStatus.OK);
     }
 
-    @GetMapping("/patient/{patId}")
-    public ResponseEntity<List<NoteModel>> findNotesByPatId(@PathVariable int patId) {
-        return new ResponseEntity<>(noteService.findAllNotesByPatId(patId).stream().map(noteAssembler::toModel).toList(), HttpStatus.OK);
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<List<NoteModel>> findByPatientId(@PathVariable int patientId) {
+        return new ResponseEntity<>(noteService.findAllByPatientId(patientId).stream().map(noteAssembler::toModel).toList(), HttpStatus.OK);
     }
 
     @PostMapping
