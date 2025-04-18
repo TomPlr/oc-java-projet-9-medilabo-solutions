@@ -25,14 +25,6 @@ public class PatientController {
         this.patientAssembler = patientAssembler;
     }
 
-    @GetMapping
-    public ResponseEntity<PatientModel> getPatient(@RequestParam int id) {
-        PatientModel patient = patientAssembler.toModel(patientService.findPatient(id).orElseThrow(() -> new NoSuchElementException("This patient does not exist")));
-
-        return new ResponseEntity<>(patient, HttpStatus.OK);
-    }
-
-
     @GetMapping("/all")
     public ResponseEntity<List<PatientModel>> getAllPatients() {
         List<PatientModel> patients = new ArrayList<>();
@@ -45,6 +37,13 @@ public class PatientController {
     @PostMapping
     public ResponseEntity<PatientModel> addPatient(@RequestBody PatientDto patient) {
         return new ResponseEntity<>(patientService.addPatient(patient), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientModel> getPatient(@PathVariable int id) {
+        PatientModel patient = patientAssembler.toModel(patientService.findPatient(id).orElseThrow(() -> new NoSuchElementException("This patient does not exist")));
+
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
     @PatchMapping

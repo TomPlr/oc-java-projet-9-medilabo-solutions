@@ -1,7 +1,7 @@
 package org.medilabo.mspatient.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+        import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
