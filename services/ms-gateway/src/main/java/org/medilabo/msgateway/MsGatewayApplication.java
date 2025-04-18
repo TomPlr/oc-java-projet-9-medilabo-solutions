@@ -19,6 +19,9 @@ public class MsGatewayApplication {
 
 	@Bean
 	public RouterFunction<ServerResponse> getRoute() {
-		return route().route(path("/patient/**"),http("http://localhost:8081/")).build();
+		return route()
+				.route(path("/patient/**"),http("http://localhost:8082/"))
+				.route(path("/note/**"),http("http://localhost:8083/"))
+			.build();
 	}
 }
