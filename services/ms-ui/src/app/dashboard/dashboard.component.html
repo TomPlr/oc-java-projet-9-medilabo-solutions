@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a routerLink="/">Medilabo Solutions</a>
+  </div>
+
+  <div class="navbar-menu">
+    <ng-container *ngIf="isAuthenticated">
+      <div class="user-menu">
+        <span class="username"
+          >{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span
+        >
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isAuthenticated">
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
+    </ng-container>
+  </div>
+</nav>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
