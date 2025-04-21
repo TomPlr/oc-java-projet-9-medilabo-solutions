@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { tap, catchError, switchMap } from 'rxjs/operators';
-import { User } from '../models/auth/user.model';
-import { LoginCredentials } from '../models/auth/login-credentials.model';
-import { RegisterCredentials } from '../models/auth/register-credentials.model';
-import { ConfigService } from './config.service';
-import { jwtDecode } from 'jwt-decode';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {tap, catchError, switchMap} from 'rxjs/operators';
+import {User} from '../models/auth/user.model';
+import {LoginCredentials} from '../models/auth/login-credentials.model';
+import {RegisterCredentials} from '../models/auth/register-credentials.model';
+import {ConfigService} from './config.service';
+import {jwtDecode} from 'jwt-decode';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -18,18 +19,16 @@ export class AuthService {
   private readonly clientId: string;
   private readonly clientSecret: string;
   private readonly redirectUri: string;
-  
-  private tokenSubject = new BehaviorSubject<string | null>(null);
-  public token$ = this.tokenSubject.asObservable();
 
   private refreshTokenTimeout: any;
 
   constructor(
     private http: HttpClient,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private router: Router
   ) {
     this.keycloakConfig = this.configService.getKeycloakConfig();
-    
+
     this.keycloakUrl = this.keycloakConfig.url;
     this.realm = this.keycloakConfig.realm;
     this.clientId = this.keycloakConfig.clientId;
@@ -40,15 +39,25 @@ export class AuthService {
   }
 
   private initializeAuth(): void {
-    const token = localStorage.getItem('token');
-    const refreshToken = localStorage.getItem('refresh_token');
-    
-    if (token) {
-      this.tokenSubject.next(token);
-      this.startRefreshTokenTimer();
+    const token = this.getToken();
+    const refreshToken = this.getRefreshToken();
 
+    if (token) {
+      this.startRefreshTokenTimer();
       this.getUserInfo();
     }
+  }
+
+  isAuthenticated(): boolean {
+    return !this.isTokenExpired();
+  }
+
+  getToken(): string | null {
+    return sessionStorage.getItem('token');
+  }
+
+  getRefreshToken(): string | null {
+    return sessionStorage.getItem("refresh_token")
   }
 
   login(credentials: LoginCredentials): Observable<any> {
@@ -58,12 +67,12 @@ export class AuthService {
     body.set('grant_type', 'password');
     body.set('username', credentials.username);
     body.set('password', credentials.password);
-    
+
     return this.http.post<any>(
       `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`,
       body.toString(),
-      { 
-        headers: { 
+      {
+        headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }
@@ -79,7 +88,13 @@ export class AuthService {
   }
 
   register(credentials: RegisterCredentials): Observable<any> {
-    const body = {
+    const body = new URLSearchParams();
+    body.set('client_id', this.clientId);
+    body.set('client_secret', this.clientSecret);
+    body.set('grant_type', 'client_credentials');
+    body.set('redirect_uri', this.redirectUri);
+
+    const options = {
       username: credentials.username,
       email: credentials.email,
       firstName: credentials.firstName,
@@ -92,13 +107,38 @@ export class AuthService {
       }]
     };
 
-    return this.http.post(
-      `${this.keycloakUrl}/admin/realms/${this.realm}/users`,
-      body
+    return this.http.post<any>(
+      `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`,
+      body.toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
     ).pipe(
+      switchMap(response => {
+        return this.http.post(
+          `${this.keycloakUrl}/admin/realms/${this.realm}/users`,
+          options,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + response?.access_token
+            }
+          }
+        ).pipe(
+          tap(response => {
+            console.log('Registration successful', response);
+          }),
+          catchError(error => {
+            console.error('Registration error:', error);
+            return throwError(() => new Error('Registration failed'));
+          })
+        );
+      }),
       catchError(error => {
-        console.error('Registration error:', error);
-        return throwError(() => new Error('Registration failed'));
+        console.error('Login error:', error);
+        return throwError(() => new Error('Invalid credentials'));
       })
     );
   }
@@ -111,12 +151,12 @@ export class AuthService {
       body.set('client_id', this.clientId);
       body.set('client_secret', this.clientSecret);
       body.set('refresh_token', refreshToken);
-      
+
       this.http.post(
         `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/logout`,
         body.toString(),
-        { 
-          headers: { 
+        {
+          headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           }
         }
@@ -124,17 +164,12 @@ export class AuthService {
     }
 
     this.stopRefreshTokenTimer();
-    localStorage.removeItem('token');
-    localStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('refresh_token');
+
     localStorage.removeItem('user');
-    
-    // Redirect to Keycloak logout endpoint
-    const logoutUrl = `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/logout`;
-    const params = new URLSearchParams({
-      client_id: this.clientId,
-      redirect_uri: this.redirectUri
-    });
-    window.location.href = `${logoutUrl}?${params.toString()}`;
+
+    this.router.navigate(['/login']);
   }
 
   refreshToken(): Observable<any> {
@@ -152,8 +187,8 @@ export class AuthService {
     return this.http.post<any>(
       `${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`,
       body.toString(),
-      { 
-        headers: { 
+      {
+        headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }
@@ -170,9 +205,10 @@ export class AuthService {
   }
 
   private handleTokenResponse(response: any): void {
-    localStorage.setItem('token', response.access_token);
-    localStorage.setItem('refresh_token', response.refresh_token);
-    this.tokenSubject.next(response.access_token);
+    sessionStorage.setItem('token', response.access_token);
+    sessionStorage.setItem('refresh_token', response.refresh_token);
+    this.getUserInfo();
+
     this.startRefreshTokenTimer(response.expires_in);
   }
 
@@ -192,20 +228,8 @@ export class AuthService {
     }
   }
 
-  isAuthenticated(): boolean {
-    return !!this.tokenSubject.value && !this.isTokenExpired();
-  }
-
-  getToken(): string | null {
-    if (this.isTokenExpired()) {
-      this.refreshToken().subscribe();
-      return null;
-    }
-    return this.tokenSubject.value;
-  }
-
   private isTokenExpired(): boolean {
-    const token = this.tokenSubject.value;
+    const token = this.getToken();
     if (!token) return true;
 
     try {
@@ -238,4 +262,4 @@ export class AuthService {
       }
     }
   }
-} 
+}

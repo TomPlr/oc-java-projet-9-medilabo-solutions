@@ -1,14 +1,14 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-import { catchError, switchMap } from 'rxjs/operators';
-import { Observable, of, throwError } from 'rxjs';
+import {HttpInterceptorFn, HttpErrorResponse} from '@angular/common/http';
+import {inject} from '@angular/core';
+import {AuthService} from '../services/auth.service';
+import {catchError, switchMap} from 'rxjs/operators';
+import {Observable, of, throwError} from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  
+
   console.log('Intercepting request to:', req.url);
-  
+
   // Skip adding token for Keycloak endpoints
   if (req.url.includes('protocol/openid-connect')) {
     console.log('Skipping auth for Keycloak endpoint');
@@ -17,14 +17,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = authService.getToken();
   console.log('Token available:', !!token);
-  
+
   if (token) {
     const authReq = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${token}`)
     });
-    
+
     console.log('Added auth header:', `Bearer ${token.substring(0, 20)}...`);
-    
+
     return next(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -54,7 +54,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       })
     );
   }
-  
+
   console.log('No token available, sending request without auth');
   return next(req);
-}; 
+};

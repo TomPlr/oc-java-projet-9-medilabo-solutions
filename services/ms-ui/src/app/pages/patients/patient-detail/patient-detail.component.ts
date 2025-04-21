@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PatientService } from '../../services/patient.service';
-import { CommentService } from '../../services/comment.service';
-import { Patient } from '../../models/patient.model';
-import { Comment } from '../../models/comment.model';
-import { User } from '../../models/auth/user.model';
-import { AddressPipe } from '../../pipes/address.pipe';
+import { PatientService } from '../../../services/patient.service';
+import { CommentService } from '../../../services/comment.service';
+import { Patient } from '../../../models/patient.model';
+import { Comment } from '../../../models/comment.model';
+import { User } from '../../../models/auth/user.model';
+import { AddressPipe } from '../../../pipes/address.pipe';
 
 @Component({
   selector: 'app-patient-detail',
@@ -67,7 +67,7 @@ export class PatientDetailComponent implements OnInit {
   private loadPatient(id: Number): void {
     this.loading = true;
     this.error = null;
-    
+
     this.patientService.getPatientById(id).subscribe({
       next: (patient) => {
         this.patient = patient;
@@ -210,4 +210,4 @@ export class PatientDetailComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/patients']);
   }
-} 
+}

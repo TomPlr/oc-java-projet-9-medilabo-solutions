@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { PatientsListComponent } from './patients/patients-list/patients-list.component';
-import { PatientDetailComponent } from './patients/patient-detail/patient-detail.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { PatientsListComponent } from './pages/patients/patients-list/patients-list.component';
+import { PatientDetailComponent } from './pages/patients/patient-detail/patient-detail.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { authGuard } from './guards/auth.guard';

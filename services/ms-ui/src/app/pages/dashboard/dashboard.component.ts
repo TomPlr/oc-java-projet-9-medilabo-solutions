@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { User } from '../models/auth/user.model';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/auth/user.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -27,4 +27,4 @@ export class DashboardComponent implements OnInit {
   logout(): void {
     this.authService.logout();
   }
-} 
+}

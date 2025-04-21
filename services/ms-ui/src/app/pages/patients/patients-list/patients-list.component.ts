@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { PatientService } from '../../services/patient.service';
-import { Patient } from '../../models/patient.model';
-import { AddressPipe } from '../../pipes/address.pipe';
+import { PatientService } from '../../../services/patient.service';
+import { Patient } from '../../../models/patient.model';
+import { AddressPipe } from '../../../pipes/address.pipe';
 
 @Component({
   selector: 'app-patients-list',
@@ -26,7 +26,7 @@ export class PatientsListComponent implements OnInit {
   loadPatients(): void {
     this.loading = true;
     this.error = null;
-    
+
     this.patientService.getAllPatients().subscribe({
       next: (data) => {
         this.patients = data;
@@ -39,4 +39,4 @@ export class PatientsListComponent implements OnInit {
       }
     });
   }
-} 
+}
