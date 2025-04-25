@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Comment } from '../models/comment.model';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Note} from '../models/note.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,20 +9,21 @@ import { Comment } from '../models/comment.model';
 export class CommentService {
   private readonly apiUrl = 'http://localhost:8080/note';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   // Get all comments for a patient
-  getCommentsByPatientId(patientId: Number): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`${this.apiUrl}/patient/${patientId}`);
+  getCommentsByPatientId(patientId: Number): Observable<Note[]> {
+    return this.http.get<Note[]>(`${this.apiUrl}/patient/${patientId}`);
   }
 
   // Add a new comment
-  addComment(comment: Comment): Observable<Comment> {
-    return this.http.post<Comment>(`${this.apiUrl}`, comment);
+  addComment(note: Note): Observable<Note> {
+    return this.http.post<Note>(`${this.apiUrl}`, note);
   }
 
   // Delete a comment
-  deleteComment(commentId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${commentId}`);
+  deleteComment(noteId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${noteId}`);
   }
-} 
+}
