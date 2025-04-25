@@ -22,6 +22,7 @@ public class MsGatewayApplication {
 		return route()
 				.route(path("/patient/**"),http("http://localhost:8082/"))
 				.route(path("/note/**"),http("http://localhost:8083/"))
+				.route(path("/assessment/**"),http("http://localhost:8084/"))
 			.build();
 	}
 }
