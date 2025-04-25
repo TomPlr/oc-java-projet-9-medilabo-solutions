@@ -25,34 +25,37 @@ public class AssessmentServiceImpl implements AssessmentService {
     }
 
     public RiskLevelModel evaluateRisk(PatientDto patientDto) {
-        int triggerCount = countTriggerTerms(patientDto.notes());
+        int triggerCount = Math.toIntExact(countTriggerTerms(patientDto.notes()));
 
-        if (triggerCount == 0) return RiskLevelModel.NONE;
         if (getAge(patientDto.dateOfBirth()) > 30) {
-            return switch (triggerCount) {
-                case 2, 3, 4, 5 -> RiskLevelModel.BORDERLINE;
-                case 6, 7 -> RiskLevelModel.IN_DANGER;
+            return switch ((Integer) triggerCount) {
+                case Integer i when i < 2 -> RiskLevelModel.NONE;
+                case Integer i when i < 6 -> RiskLevelModel.BORDERLINE;
+                case Integer i when i < 8 -> RiskLevelModel.IN_DANGER;
                 default -> RiskLevelModel.EARLY_ONSET;
             };
         } else {
             return switch (patientDto.gender()) {
-                case GenderModel.M -> switch (triggerCount) {
-                    case 3, 4 -> RiskLevelModel.IN_DANGER;
+                case GenderModel.M -> switch ((Integer) triggerCount) {
+                    case Integer i when i < 2 -> RiskLevelModel.NONE;
+                    case Integer i when i < 6 -> RiskLevelModel.IN_DANGER;
                     default -> RiskLevelModel.EARLY_ONSET;
                 };
-                case GenderModel.F -> triggerCount == 4 ? RiskLevelModel.IN_DANGER : RiskLevelModel.EARLY_ONSET;
+                case GenderModel.F -> switch ((Integer) triggerCount) {
+                    case Integer i when i < 3 -> RiskLevelModel.NONE;
+                    case Integer i when i < 7 -> RiskLevelModel.IN_DANGER;
+                    default -> RiskLevelModel.EARLY_ONSET;
+                };
             };
         }
     }
 
-    private int countTriggerTerms(List<NoteModel> notes) {
+    private long countTriggerTerms(List<NoteModel> notes) {
         if (TRIGGER_TERMS.isEmpty()) {
             TRIGGER_TERMS.addAll(fileReaderService.getTriggerTerms());
         }
 
-        String allNotes = notes.stream().map(NoteModel::content).reduce("", String::concat);
-
-        return Math.toIntExact(TRIGGER_TERMS.stream().map(String::toLowerCase).filter(allNotes::contains).count());
+        return TRIGGER_TERMS.stream().map(String::toLowerCase).filter(term -> isTermInNotes(term, notes)).count();
     }
 
     private int getAge(String dateOfBirth) {
@@ -60,4 +63,8 @@ public class AssessmentServiceImpl implements AssessmentService {
                 .until(LocalDate.now()).getYears();
     }
 
+    private boolean isTermInNotes(String term, List<NoteModel> notes) {
+        return notes.stream()
+                .anyMatch(note -> note.content().toLowerCase().contains(term.toLowerCase()));
+    }
 }
