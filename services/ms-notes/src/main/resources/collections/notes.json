@@ -155,7 +155,7 @@
   {
     "id": "67caf22ab9bda8fe4a1015cf",
     "patientId": 4,
-    "content": "Taille, Poids, Cholestérol, Vertige et Réaction",
+    "content": "Taille, Poids, Cholestérol, Vertiges et Réaction",
     "date": {
       "$date": "2024-03-18T14:55:26.000Z"
     },
