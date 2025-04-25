@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
-import {tap, catchError, switchMap} from 'rxjs/operators';
+import {map, Observable, throwError} from 'rxjs';
+import {catchError, switchMap, tap} from 'rxjs/operators';
 import {User} from '../models/auth/user.model';
 import {LoginCredentials} from '../models/auth/login-credentials.model';
 import {RegisterCredentials} from '../models/auth/register-credentials.model';
@@ -36,16 +36,6 @@ export class AuthService {
     this.redirectUri = this.keycloakConfig.redirectUri;
 
     this.initializeAuth();
-  }
-
-  private initializeAuth(): void {
-    const token = this.getToken();
-    const refreshToken = this.getRefreshToken();
-
-    if (token) {
-      this.startRefreshTokenTimer();
-      this.getUserInfo();
-    }
   }
 
   isAuthenticated(): boolean {
@@ -127,8 +117,9 @@ export class AuthService {
             }
           }
         ).pipe(
-          tap(response => {
-            console.log('Registration successful', response);
+          map(() => {
+            console.log('Registration successful');
+            return true;
           }),
           catchError(error => {
             console.error('Registration error:', error);
@@ -202,6 +193,16 @@ export class AuthService {
         return throwError(() => new Error('Token refresh failed'));
       })
     );
+  }
+
+  private initializeAuth(): void {
+    const token = this.getToken();
+    const refreshToken = this.getRefreshToken();
+
+    if (token) {
+      this.startRefreshTokenTimer();
+      this.getUserInfo();
+    }
   }
 
   private handleTokenResponse(response: any): void {

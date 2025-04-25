@@ -6,24 +6,24 @@ import {Note} from '../models/note.model';
 @Injectable({
   providedIn: 'root'
 })
-export class CommentService {
+export class NoteService {
   private readonly apiUrl = 'http://localhost:8080/note';
 
   constructor(private http: HttpClient) {
   }
 
-  // Get all comments for a patient
-  getCommentsByPatientId(patientId: Number): Observable<Note[]> {
+  // Get all notes for a patient
+  getNotesByPatientId(patientId: Number): Observable<Note[]> {
     return this.http.get<Note[]>(`${this.apiUrl}/patient/${patientId}`);
   }
 
-  // Add a new comment
-  addComment(note: Note): Observable<Note> {
+  // Add a new note
+  addNote(note: Note): Observable<Note> {
     return this.http.post<Note>(`${this.apiUrl}`, note);
   }
 
-  // Delete a comment
-  deleteComment(noteId: number): Observable<void> {
+  // Delete a note
+  deleteNote(noteId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${noteId}`);
   }
 }

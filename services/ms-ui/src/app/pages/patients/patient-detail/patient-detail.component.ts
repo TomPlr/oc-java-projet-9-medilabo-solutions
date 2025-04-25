@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PatientService} from '../../../services/patient.service';
-import {CommentService} from '../../../services/comment.service';
 import {Patient} from '../../../models/patient.model';
 import {Note} from '../../../models/note.model';
 import {AddressPipe} from '../../../pipes/address.pipe';
@@ -11,6 +10,7 @@ import {AssessmentService} from '../../../services/assessment.service';
 import {forkJoin, of} from 'rxjs';
 import {catchError, finalize} from 'rxjs/operators';
 import {assessmentResults, RiskLevel} from '../../../models/assessment.model';
+import {NoteService} from '../../../services/note.service';
 
 @Component({
   selector: 'app-patient-detail',
@@ -22,17 +22,17 @@ import {assessmentResults, RiskLevel} from '../../../models/assessment.model';
 export class PatientDetailComponent implements OnInit {
   currentUser: any;
   patient: Patient | null = null;
-  comments: Note[] = [];
+  notes: Note[] = [];
   loading: boolean = false;
   error: string | null = null;
   assessmentResult: RiskLevel | null = null;
   isEditMode: boolean = false;
   patientForm: FormGroup;
-  commentForm: FormGroup;
+  noteForm: FormGroup;
   protected readonly assessmentResults = assessmentResults;
   private route = inject(ActivatedRoute);
   private patientService = inject(PatientService);
-  private commentService = inject(CommentService);
+  private noteService = inject(NoteService);
   private assessmentService = inject(AssessmentService);
 
   constructor(
@@ -52,7 +52,7 @@ export class PatientDetailComponent implements OnInit {
       phoneNumber: ['']
     });
 
-    this.commentForm = this.fb.group({
+    this.noteForm = this.fb.group({
       content: ['', [Validators.required, Validators.minLength(1)]]
     });
   }
@@ -73,10 +73,10 @@ export class PatientDetailComponent implements OnInit {
         })
       );
 
-      const comments$ = this.commentService.getCommentsByPatientId(patientId).pipe(
+      const comments$ = this.noteService.getNotesByPatientId(patientId).pipe(
         catchError(err => {
-          console.error('Error loading comments:', err);
-          this.error = (this.error ? this.error + ' ' : '') + 'Failed to load comments.';
+          console.error('Error loading notes:', err);
+          this.error = (this.error ? this.error + ' ' : '') + 'Failed to load notes.';
           return of([]);
         })
       );
@@ -88,13 +88,13 @@ export class PatientDetailComponent implements OnInit {
             this.loading = false;
           })
         )
-        .subscribe(([patient, comments]) => {
+        .subscribe(([patient, notes]) => {
           this.patient = patient;
-          this.comments = this.sortComments(comments);
+          this.notes = this.sortComments(notes);
 
-          if (this.patient && this.comments) {
-            console.log('Patient and comments loaded, calling assessment service...');
-            this.assessmentService.loadAssessment(this.patient, this.comments).subscribe({
+          if (this.patient && this.notes) {
+            console.log('Patient and notes loaded, calling assessment service...');
+            this.assessmentService.loadAssessment(this.patient, this.notes).subscribe({
               next: (result) => {
                 this.assessmentResult = result;
                 console.log('Assessment Result:', this.assessmentResult);
@@ -118,7 +118,7 @@ export class PatientDetailComponent implements OnInit {
               phoneNumber: this.patient.phoneNumber
             });
           } else {
-            console.error('Cannot proceed with assessment as patient or comments failed to load.');
+            console.error('Cannot proceed with assessment as patient or notes failed to load.');
           }
         });
 
@@ -191,20 +191,20 @@ export class PatientDetailComponent implements OnInit {
     }
   }
 
-  addComment(): void {
-    if (!this.patient?.id || this.commentForm.invalid) return;
+  addNote(): void {
+    if (!this.patient?.id || this.noteForm.invalid) return;
 
-    const comment: Note = {
+    const note: Note = {
       patientId: this.patient.id,
-      content: this.commentForm.get('content')?.value.trim(),
+      content: this.noteForm.get('content')?.value.trim(),
       createdBy: this.currentUser?.firstName + ' ' + this.currentUser?.lastName || ''
     };
 
-    this.commentService.addComment(comment).subscribe({
-      next: (comment) => {
-        this.comments.unshift(comment);
+    this.noteService.addNote(note).subscribe({
+      next: (note) => {
+        this.notes.unshift(note);
         if (this.patient) {
-          this.assessmentService.loadAssessment(this.patient, this.comments).subscribe({
+          this.assessmentService.loadAssessment(this.patient, this.notes).subscribe({
             next: (result) => {
               this.assessmentResult = result;
             },
@@ -213,26 +213,26 @@ export class PatientDetailComponent implements OnInit {
             }
           });
         }
-        this.commentForm.reset();
+        this.noteForm.reset();
       },
       error: (err) => {
-        this.error = 'Failed to add comment. Please try again later.';
-        console.error('Error adding comment:', err);
+        this.error = 'Failed to add note. Please try again later.';
+        console.error('Error adding note:', err);
       }
     });
   }
 
-  clearComment(): void {
-    this.commentForm.reset();
+  clearNote(): void {
+    this.noteForm.reset();
   }
 
-  deleteComment(commentId: number): void {
-    this.commentService.deleteComment(commentId).subscribe({
+  deleteNote(noteId: number): void {
+    this.noteService.deleteNote(noteId).subscribe({
       next: () => {
-        this.comments = this.comments.filter(comment => comment.id !== commentId);
+        this.notes = this.notes.filter(comment => comment.id !== noteId);
         // Re-fetch assessment after deleting a comment
         if (this.patient) {
-          this.assessmentService.loadAssessment(this.patient, this.comments).subscribe({
+          this.assessmentService.loadAssessment(this.patient, this.notes).subscribe({
             next: (result) => {
               this.assessmentResult = result;
             },
@@ -270,7 +270,7 @@ export class PatientDetailComponent implements OnInit {
     }
   }
 
-  private sortComments(comments: Note[]): Note[] {
-    return comments && comments.length > 0 ? comments.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()) : [];
+  private sortComments(notes: Note[]): Note[] {
+    return notes && notes.length > 0 ? notes.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()) : [];
   }
 }

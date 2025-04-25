@@ -20,7 +20,7 @@ export class RegisterComponent {
     lastName: '',
     password: ''
   };
-  
+
   confirmPassword: string = '';
   errorMessage: string = '';
   isLoading: boolean = false;
@@ -33,32 +33,31 @@ export class RegisterComponent {
 
   onSubmit(): void {
     this.passwordMismatch = this.credentials.password !== this.confirmPassword;
-    
+
     if (this.passwordMismatch) {
       this.errorMessage = 'Passwords do not match';
       return;
     }
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     this.authService.register(this.credentials).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response) {
           // Registration successful, redirect to login
-          this.router.navigate(['/login'], { 
-            queryParams: { registered: true } 
-          });
+          this.router.navigate(['/login']);
         } else {
           this.errorMessage = 'Registration failed. Please try again.';
         }
       },
       error: (error) => {
+        ;
         this.isLoading = false;
         console.error('Registration error:', error);
         this.errorMessage = 'An error occurred during registration. Please try again.';
       }
     });
   }
-} 
+}

@@ -273,14 +273,14 @@
   </div>
 </div>
 
-<!-- Comments Section -->
+<!-- Notes Section -->
 <div
   *ngIf="patient && !loading"
   class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6 mt-6"
 >
   <div class="md:grid md:grid-cols-3 md:gap-6">
     <div class="md:col-span-1">
-      <h3 class="text-lg font-medium leading-6 text-gray-900">Comments</h3>
+      <h3 class="text-lg font-medium leading-6 text-gray-900">Notes</h3>
       <p class="mt-1 text-sm text-gray-500">
         Document clinical observations, treatment progress, and important notes
         about the patient's medical history and care plan.
@@ -298,23 +298,23 @@
       <!-- End Assessment Result Display -->
     </div>
     <div class="mt-5 md:mt-0 md:col-span-2">
-      <!-- Comments List -->
+      <!-- Notes List -->
       <div class="space-y-4">
-        <div *ngFor="let comment of comments" class="bg-gray-50 p-4 rounded-lg">
+        <div *ngFor="let note of notes" class="bg-gray-50 p-4 rounded-lg">
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <p class="text-sm text-gray-900">
-                {{ comment.content || "N/A" }}
+                {{ note.content || "N/A" }}
               </p>
               <div class="mt-2 flex items-center text-xs text-gray-500">
-                <span>By {{ comment.createdBy || "N/A" }}</span>
+                <span>By {{ note.createdBy || "N/A" }}</span>
                 <span class="mx-2">•</span>
-                <span>{{ (comment.date | date : "medium") || "N/A" }}</span>
+                <span>{{ (note.date | date : "medium") || "N/A" }}</span>
               </div>
             </div>
             <button
-              *ngIf="currentUser?.username === comment.createdBy"
-              (click)="deleteComment(comment.id || 0)"
+              *ngIf="currentUser?.username === note.createdBy"
+              (click)="deleteNote(note.id || 0)"
               class="ml-4 text-red-600 hover:text-red-800 transition-colors duration-200 cursor-pointer"
             >
               <img src="assets/icons/trash.svg" alt="Delete" class="h-5 w-5"/>
@@ -323,26 +323,26 @@
         </div>
       </div>
 
-      <!-- New Comment Form -->
+      <!-- New Note Form -->
       <form
-        [formGroup]="commentForm"
-        (ngSubmit)="addComment()"
+        [formGroup]="noteForm"
+        (ngSubmit)="addNote()"
         class="mt-6 space-y-4 bg-gray-50 p-6 rounded-lg"
       >
         <div class="relative">
           <textarea
-            id="comment"
-            name="comment"
+            id="note"
+            name="note"
             rows="4"
             formControlName="content"
             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-            placeholder="Comment on the patient's condition or treatment..."
+            placeholder="Note on the patient's condition or treatment..."
           ></textarea>
         </div>
         <div class="flex justify-end space-x-3">
           <button
             type="button"
-            (click)="clearComment()"
+            (click)="clearNote()"
             class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 cursor-pointer"
           >
             <img
@@ -354,7 +354,7 @@
           </button>
           <button
             type="submit"
-            [disabled]="commentForm.invalid"
+            [disabled]="noteForm.invalid"
             class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
           >
             <img src="assets/icons/send.svg" alt="Add" class="h-4 w-4 mr-2"/>
