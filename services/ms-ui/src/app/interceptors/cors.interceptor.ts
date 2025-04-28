@@ -1,10 +1,8 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { ConfigService } from '../services/config.service';
+import {HttpInterceptorFn} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 export const corsInterceptor: HttpInterceptorFn = (req, next) => {
-  const configService = inject(ConfigService);
-  const keycloakConfig = configService.getKeycloakConfig();
+  const keycloakConfig = environment.keycloak;
 
   // Only modify Keycloak requests
   if (req.url.includes(keycloakConfig.url)) {
@@ -15,4 +13,4 @@ export const corsInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   return next(req);
-}; 
+};

@@ -46,14 +46,12 @@ export class RegisterComponent {
       next: (response) => {
         this.isLoading = false;
         if (response) {
-          // Registration successful, redirect to login
           this.router.navigate(['/login']);
         } else {
           this.errorMessage = 'Registration failed. Please try again.';
         }
       },
       error: (error) => {
-        ;
         this.isLoading = false;
         console.error('Registration error:', error);
         this.errorMessage = 'An error occurred during registration. Please try again.';

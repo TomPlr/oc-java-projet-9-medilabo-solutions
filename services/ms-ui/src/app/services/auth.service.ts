@@ -5,9 +5,9 @@ import {catchError, switchMap, tap} from 'rxjs/operators';
 import {User} from '../models/auth/user.model';
 import {LoginCredentials} from '../models/auth/login-credentials.model';
 import {RegisterCredentials} from '../models/auth/register-credentials.model';
-import {ConfigService} from './config.service';
 import {jwtDecode} from 'jwt-decode';
 import {Router} from '@angular/router';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +24,9 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private configService: ConfigService,
     private router: Router
   ) {
-    this.keycloakConfig = this.configService.getKeycloakConfig();
+    this.keycloakConfig = environment.keycloak;
 
     this.keycloakUrl = this.keycloakConfig.url;
     this.realm = this.keycloakConfig.realm;
@@ -94,7 +93,8 @@ export class AuthService {
         type: 'password',
         value: credentials.password,
         temporary: false
-      }]
+      }],
+      realmRoles: ['manager'],
     };
 
     return this.http.post<any>(
@@ -197,7 +197,6 @@ export class AuthService {
 
   private initializeAuth(): void {
     const token = this.getToken();
-    const refreshToken = this.getRefreshToken();
 
     if (token) {
       this.startRefreshTokenTimer();

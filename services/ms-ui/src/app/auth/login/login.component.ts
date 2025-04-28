@@ -17,7 +17,7 @@ export class LoginComponent {
     username: '',
     password: ''
   };
-  
+
   errorMessage: string = '';
   isLoading: boolean = false;
 
@@ -29,12 +29,11 @@ export class LoginComponent {
   onSubmit(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     this.authService.login(this.credentials).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response) {
-          // Login successful, redirect to dashboard
           this.router.navigate(['/']);
         } else {
           this.errorMessage = 'Invalid username or password';
@@ -47,4 +46,4 @@ export class LoginComponent {
       }
     });
   }
-} 
+}

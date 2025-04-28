@@ -1,6 +1,6 @@
 <div class="register-container">
   <div class="register-card">
-    <h2>RMedilabo Solutions</h2>
+    <h2>Medilabo Solutions</h2>
 
     <div *ngIf="errorMessage" class="alert alert-danger">
       {{ errorMessage }}
@@ -92,7 +92,7 @@
       <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="!registerForm.form.valid || isLoading || passwordMismatch"
+        [disabled]="!registerForm.form.valid || isLoading"
       >
         <span
           *ngIf="isLoading"
