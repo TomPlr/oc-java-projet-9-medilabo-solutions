@@ -1,6 +1,8 @@
 package org.medilabo.mspatient.dto;
 
-public record PatientDto(String lastName, String firstName, String dateOfBirth,
-        String gender, AddressDto address,
-        String phoneNumber) {
+import java.time.LocalDate;
+
+public record PatientDto(String lastName, String firstName, LocalDate dateOfBirth,
+                         String gender, AddressDto address,
+                         String phoneNumber) {
 }

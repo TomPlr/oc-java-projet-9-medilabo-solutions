@@ -7,6 +7,7 @@ import org.medilabo.mspatient.model.PatientModel;
 import org.medilabo.mspatient.service.PatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -47,11 +48,13 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('manager')")
     public ResponseEntity<PatientModel> updatePatient(@PathVariable int id, @RequestBody PatientDto patient) {
         return new ResponseEntity<>(patientService.updatePatient(id, patient), HttpStatus.OK);
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('manager')")
     public ResponseEntity<GenericResponseModel> deletePatient(@RequestParam int id) {
         return new ResponseEntity<>(patientService.deletePatient(id), HttpStatus.OK);
     }
