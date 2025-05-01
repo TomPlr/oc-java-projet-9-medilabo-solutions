@@ -3,6 +3,7 @@ package org.medilabo.msnotes.service.impl;
 import org.medilabo.msnotes.document.Note;
 import org.medilabo.msnotes.dto.NoteDto;
 import org.medilabo.msnotes.mapper.NoteMapper;
+import org.medilabo.msnotes.model.GenericResponseModel;
 import org.medilabo.msnotes.repository.NoteRepository;
 import org.medilabo.msnotes.service.NoteService;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,15 @@ public class NoteServiceImpl implements NoteService {
         note.setDate(new Date());
 
         return noteRepository.save(note);
+    }
+
+    @Override
+    public GenericResponseModel deleteNote(String id) {
+        try {
+            noteRepository.deleteById(id);
+            return new GenericResponseModel(true, "Note deleted successfully");
+        } catch (Exception e) {
+            return new GenericResponseModel(false, e.getMessage());
+        }
     }
 }

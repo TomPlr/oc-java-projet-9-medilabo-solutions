@@ -2,10 +2,12 @@ package org.medilabo.msnotes.controller;
 
 import org.medilabo.msnotes.assembler.NoteAssembler;
 import org.medilabo.msnotes.dto.NoteDto;
+import org.medilabo.msnotes.model.GenericResponseModel;
 import org.medilabo.msnotes.model.NoteModel;
 import org.medilabo.msnotes.service.NoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +40,14 @@ public class NoteController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('medical_staff')")
     public ResponseEntity<NoteModel> addNote(@RequestBody NoteDto noteDto) {
         return new ResponseEntity<>(noteAssembler.toModel(noteService.addNote(noteDto)), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('medical_staff')")
+    public ResponseEntity<GenericResponseModel> deleteNote(@PathVariable String id) {
+        return new ResponseEntity<>(noteService.deleteNote(id), HttpStatus.OK);
     }
 }
