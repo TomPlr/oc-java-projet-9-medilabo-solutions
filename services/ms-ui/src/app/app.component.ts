@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet, RouterLink, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { AuthService } from './services/auth.service';
-import { User } from './models/auth/user.model';
+import {Component} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +9,5 @@ import { User } from './models/auth/user.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent  {}
+export class AppComponent {
+}

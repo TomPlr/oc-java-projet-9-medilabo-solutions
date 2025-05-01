@@ -1,10 +1,19 @@
-import { inject } from '@angular/core';
-import { Router, type CanActivateFn } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import {ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, UrlTree} from '@angular/router';
+import {AuthGuardData, createAuthGuard} from 'keycloak-angular';
+import {Role} from '../models/role.model';
+import {environment} from '../../environments/environment';
 
-export const authGuard: CanActivateFn = (route, state) => {
-  const router = inject(Router);
-  const authService = inject(AuthService);
+const isAccessAllowed = async (
+  route: ActivatedRouteSnapshot,
+  _: RouterStateSnapshot,
+  authData: AuthGuardData
+): Promise<boolean | UrlTree> => {
+  const {authenticated, grantedRoles} = authData;
+  const roles = [Role.MANAGER, Role.MEDICAL_STAFF];
+  const hasRequiredRole = roles.some(role => grantedRoles.resourceRoles[environment.keycloak.clientId].includes(role))
 
-  return authService.isAuthenticated() || router.navigate(['/login']);
-};
+  return authenticated && hasRequiredRole;
+}
+
+
+export const canActivateAuthRole = createAuthGuard<CanActivateFn>(isAccessAllowed);

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/auth/user.model';
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import Keycloak, {KeycloakProfile} from 'keycloak-js';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -11,20 +11,18 @@ import { User } from '../../models/auth/user.model';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-
-  currentUser: User | null = null;
-  isAuthenticated = false;
-
-  constructor(
-    private readonly authService: AuthService,
-  ) {}
+  currentUser: KeycloakProfile | null = null;
+  private keycloak = inject(Keycloak);
 
   ngOnInit(): void {
-    this.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-    this.isAuthenticated = !!this.currentUser;
+    this.keycloak.loadUserProfile().then(user => {
+      localStorage.setItem('user', JSON.stringify(user));
+      this.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    })
   }
 
+
   logout(): void {
-    this.authService.logout();
+    this.keycloak.logout();
   }
 }

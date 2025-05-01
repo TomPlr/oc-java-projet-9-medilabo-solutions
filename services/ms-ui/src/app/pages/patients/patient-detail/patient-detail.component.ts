@@ -11,11 +11,13 @@ import {forkJoin, of} from 'rxjs';
 import {catchError, finalize} from 'rxjs/operators';
 import {assessmentResults, RiskLevel} from '../../../models/assessment.model';
 import {NoteService} from '../../../services/note.service';
+import {HasRolesDirective} from 'keycloak-angular';
+import {Role} from '../../../models/role.model';
 
 @Component({
   selector: 'app-patient-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AddressPipe],
+  imports: [CommonModule, ReactiveFormsModule, AddressPipe, HasRolesDirective],
   templateUrl: './patient-detail.component.html',
   styleUrls: ['./patient-detail.component.css']
 })
@@ -29,14 +31,17 @@ export class PatientDetailComponent implements OnInit {
   isEditMode: boolean = false;
   patientForm: FormGroup;
   noteForm: FormGroup;
+
   protected readonly assessmentResults = assessmentResults;
+  protected readonly Role = Role;
+
   private route = inject(ActivatedRoute);
   private patientService = inject(PatientService);
   private noteService = inject(NoteService);
   private assessmentService = inject(AssessmentService);
+  private router = inject(Router);
 
   constructor(
-    private router: Router,
     private fb: FormBuilder,
   ) {
     this.patientForm = this.fb.group({
@@ -197,7 +202,7 @@ export class PatientDetailComponent implements OnInit {
     const note: Note = {
       patientId: this.patient.id,
       content: this.noteForm.get('content')?.value.trim(),
-      createdBy: this.currentUser?.firstName + ' ' + this.currentUser?.lastName || ''
+      createdBy: this.currentUser.username,
     };
 
     this.noteService.addNote(note).subscribe({

@@ -1,4 +1,5 @@
 import {Note} from './note.model';
+import {Gender} from './patient.model';
 
 export type RiskLevel = "NONE" | "BORDERLINE" | "EARLY_ONSET" | "IN_DANGER";
 
@@ -11,8 +12,8 @@ export const assessmentResults: Map<RiskLevel, String> = new Map([
 
 
 export interface AssessmentRequestData {
-  dateOfBirth: string;
-  gender: string;
+  dateOfBirth: string | undefined;
+  gender: Gender | undefined;
   notes: Note[];
 }
 

@@ -46,7 +46,7 @@
         <p class="mt-1 text-sm text-gray-500">
           Personal and medical information about the patient.
         </p>
-        <div class="mt-4">
+        <div class="mt-4" *kaHasRoles="[Role.MANAGER]">
           <button
             *ngIf="!isEditMode"
             (click)="toggleEditMode()"
@@ -325,6 +325,7 @@
 
       <!-- New Note Form -->
       <form
+        *kaHasRoles="[Role.MEDICAL_STAFF]"
         [formGroup]="noteForm"
         (ngSubmit)="addNote()"
         class="mt-6 space-y-4 bg-gray-50 p-6 rounded-lg"

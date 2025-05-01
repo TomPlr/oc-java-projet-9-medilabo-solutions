@@ -1,15 +1,18 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-
-import { routes } from './app.routes';
-import { authInterceptor } from './interceptors/auth.interceptor';
-import { corsInterceptor } from './interceptors/cors.interceptor';
+import {includeBearerTokenInterceptor} from 'keycloak-angular';
+import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
+import {provideRouter} from '@angular/router';
+import {routes} from './app.routes';
+import {provideHttpClient, withInterceptors} from "@angular/common/http";
+import {provideKeycloakAngular} from './config/keycloak.config';
+import {provideBearerTokenConfig} from './config/bearer-token.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideKeycloakAngular(),
+    provideBearerTokenConfig(),
+    provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([corsInterceptor, authInterceptor]))
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor]))
   ]
-};
+}
+
