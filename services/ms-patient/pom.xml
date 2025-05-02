@@ -129,6 +129,7 @@
                         <exclude>**/dto/*</exclude>
                         <exclude>**/entity/*</exclude>
                         <exclude>**/mapper/*</exclude>
+                        <exclude>**/exception/*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
