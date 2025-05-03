@@ -4,6 +4,7 @@ import {Patient} from '../models/patient.model';
 import {Note} from '../models/note.model';
 import {Observable} from 'rxjs';
 import {AssessmentRequestData, RiskLevel} from '../models/assessment.model';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import {AssessmentRequestData, RiskLevel} from '../models/assessment.model';
 export class AssessmentService {
   private http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:8080/assessment';
+  private readonly apiUrl = environment.api.gateway_url + '/assessment';
 
 
   /**

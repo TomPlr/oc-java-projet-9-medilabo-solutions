@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Note} from '../models/note.model';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import {Note} from '../models/note.model';
 export class NoteService {
   private http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:8080/note';
+  private readonly apiUrl = environment.api.gateway_url + '/note';
 
   /**
    * Retrieves all medical notes for a specific patient

@@ -3,8 +3,9 @@ import {
   INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
   IncludeBearerTokenCondition
 } from 'keycloak-angular';
+import {environment} from '../../environments/environment';
 
-const URL_PATTERN = /^(http:\/\/localhost:8080)(\/.*)?$/i;
+const URL_PATTERN: RegExp = new RegExp(`^(${environment.api.gateway_url})(/.*)?$`, 'i');
 
 export const provideBearerTokenConfig = () => {
   return {
@@ -17,4 +18,3 @@ export const provideBearerTokenConfig = () => {
     ],
   };
 };
-

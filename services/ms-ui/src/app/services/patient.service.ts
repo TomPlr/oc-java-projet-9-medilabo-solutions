@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Patient} from '../models/patient.model';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import {Patient} from '../models/patient.model';
 export class PatientService {
   private http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:8080/patient';
+  private readonly apiUrl = environment.api.gateway_url + '/patient';
 
   /**
    * Retrieves all patients from the database

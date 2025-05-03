@@ -4,11 +4,12 @@ export const environment = {
     url: import.meta.env.NG_APP_KEYCLOAK_URL,
     realm: import.meta.env.NG_APP_KEYCLOAK_REALM,
     clientId: import.meta.env.NG_APP_KEYCLOAK_CLIENT_ID,
-    clientSecret: import.meta.env.NG_APP_KEYCLOAK_CLIENT_SECRET,
     redirectUri: import.meta.env.NG_APP_KEYCLOAK_REDIRECT_URI,
   },
   api: {
-    url: import.meta.env.NG_APP_API_URL,
-    version: import.meta.env.NG_APP_API_VERSION,
+    gateway_url: import.meta.env.NG_APP_API_GATEWAY_URL,
+    patient_url: import.meta.env.NG_APP_API_PATIENT_URL,
+    note_url: import.meta.env.NG_APP_API_NOTE_URL,
+    assessment_url: import.meta.env.NG_APP_API_ASSESSMENT_URL,
   }
 };
