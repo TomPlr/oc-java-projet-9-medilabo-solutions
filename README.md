@@ -107,9 +107,6 @@ NG_APP_KEYCLOAK_REDIRECT_URI=your_redirect_uri
 
 # API Configuration
 NG_APP_API_GATEWAY_URL=your_gateway_service_url
-NG_APP_API_PATIENT_URL=your_patient_service_url
-NG_APP_API_NOTE_URL=your_note_service_url
-NG_APP_API_ASSESSMENT_URL=your_assessment_service_url
 ```
 
 ## Running the Application

@@ -10,11 +10,8 @@ declare interface Env {
 
 
   // API Configuration
-
   readonly NG_APP_API_GATEWAY_URL: string;
-  readonly NG_APP_API_PATIENT_URL: string;
-  readonly NG_APP_API_NOTE_URL: string;
-  readonly NG_APP_API_ASSESSMENT_URL: string;
+
 }
 
 declare interface ImportMeta {

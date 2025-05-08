@@ -8,8 +8,5 @@ export const environment = {
   },
   api: {
     gateway_url: import.meta.env.NG_APP_API_GATEWAY_URL,
-    patient_url: import.meta.env.NG_APP_API_PATIENT_URL,
-    note_url: import.meta.env.NG_APP_API_NOTE_URL,
-    assessment_url: import.meta.env.NG_APP_API_ASSESSMENT_URL,
   }
 };
