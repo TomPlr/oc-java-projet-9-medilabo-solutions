@@ -1,0 +1,107 @@
+services:
+  # Patient Database
+  patient-db:
+    image: mysql:latest
+    container_name: patient-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - patient-db-data:/var/lib/mysql
+      - ./services/ms-patient/src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - medilabo-network
+    healthcheck:
+      test: [ "CMD", "mysql","-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
+      interval: 3s
+      retries: 5
+      timeout: 5s
+
+
+  # Gateway Service
+  ms-gateway:
+    build:
+      context: ./services/ms-gateway
+      dockerfile: Dockerfile
+    container_name: ms-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - medilabo-network
+    environment:
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${KEYCLOAK_JWK_SET_URI}
+
+  # Patient Service
+  ms-patient:
+    build:
+      context: ./services/ms-patient
+      dockerfile: Dockerfile
+    container_name: ms-patient
+    ports:
+      - "8082:8082"
+    depends_on:
+      patient-db:
+        condition: service_healthy
+    networks:
+      - medilabo-network
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://${PATIENT_DB_HOST}:${PATIENT_DB_PORT}/${PATIENT_DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${PATIENT_DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${PATIENT_DB_PASSWORD}
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${KEYCLOAK_JWK_SET_URI}
+
+  # Notes Service
+  ms-notes:
+    build:
+      context: ./services/ms-notes
+      dockerfile: Dockerfile
+    container_name: ms-notes
+    ports:
+      - "8083:8083"
+    depends_on:
+      - ms-gateway
+    networks:
+      - medilabo-network
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_DATABASE}?retryWrites=true&w=majority
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${KEYCLOAK_JWK_SET_URI}
+
+  # Assessment Service
+  ms-assessment:
+    build:
+      context: ./services/ms-assessment
+      dockerfile: Dockerfile
+    container_name: ms-assessment
+    ports:
+      - "8084:8084"
+    depends_on:
+      - ms-gateway
+    networks:
+      - medilabo-network
+    environment:
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${KEYCLOAK_JWK_SET_URI}
+
+  # UI Service
+  ms-ui:
+    build:
+      context: ./services/ms-ui
+      dockerfile: Dockerfile
+    container_name: ms-ui
+    ports:
+      - "4200:80"
+    depends_on:
+      - ms-gateway
+    networks:
+      - medilabo-network
+
+networks:
+  medilabo-network:
+    driver: bridge
+
+volumes:
+  patient-db-data:
