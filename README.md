@@ -82,10 +82,16 @@ PATIENT_DB_USERNAME=your_db_username
 PATIENT_DB_PASSWORD=your_db_password
 
 # MongoDB Configuration
+## With MongoDB Atlas
 MONGODB_USER=your_mongodb_username
 MONGODB_PASSWORD=your_mongodb_password
 MONGODB_HOST=your_mongodb_host
-MONGODB_DATABASE=your_database_name
+
+## With local MongoDB 
+MONGODB_LOCAL_USER=user
+MONGODB_LOCAL_PASSWORD=password
+
+MONGODB_DATABASE=ms-notes
 
 # Keycloak Configuration
 KEYCLOAK_ISSUER_URI=http://your_keycloak_url/auth/realms/your_realm
