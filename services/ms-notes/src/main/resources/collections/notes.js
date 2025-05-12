@@ -1,0 +1,134 @@
+db = db.getSiblingDB('ms-notes');
+
+// Drop the collection if it exists
+db.note.drop();
+
+// Insert all documents
+db.note.insertMany([
+    {
+        "id": "67caf22ab9bda8fe4a1015be",
+        "patientId": 1,
+        "content": "Le patient déclare qu'il 'se sent très bien'",
+        "date": ISODate("2024-01-15T09:23:14.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015bf",
+        "patientId": 1,
+        "content": "Poids égal ou inférieur au poids recommandé",
+        "date": ISODate("2024-02-03T14:45:32.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c0",
+        "patientId": 2,
+        "content": "Le patient déclare qu'il ressent beaucoup de stress au travail",
+        "date": ISODate("2024-01-28T11:15:47.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c1",
+        "patientId": 2,
+        "content": "Il se plaint également que son audition est anormale dernièrement",
+        "date": ISODate("2024-02-15T10:30:22.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c2",
+        "patientId": 2,
+        "content": "Le patient déclare avoir fait une réaction aux médicaments au cours des 3 derniers mois",
+        "date": ISODate("2024-03-01T15:20:55.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c3",
+        "patientId": 2,
+        "content": "Il remarque également que son audition continue d'être anormale",
+        "date": ISODate("2024-03-10T16:42:18.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c4",
+        "patientId": 3,
+        "content": "Le patient déclare qu'il fume depuis peu",
+        "date": ISODate("2024-01-20T08:55:39.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c5",
+        "patientId": 3,
+        "content": "Le patient déclare qu'il est fumeur et qu'il a cessé de fumer l'année dernière",
+        "date": ISODate("2024-02-08T13:17:43.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c6",
+        "patientId": 3,
+        "content": "Il se plaint également de crises d'apnée respiratoire anormales",
+        "date": ISODate("2024-02-25T09:48:11.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c7",
+        "patientId": 3,
+        "content": "Tests de laboratoire indiquant un taux de cholestérol LDL élevé",
+        "date": ISODate("2024-03-05T11:33:27.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c8",
+        "patientId": 4,
+        "content": "Le patient déclare qu'il lui est devenu difficile de monter les escaliers",
+        "date": ISODate("2024-01-10T10:05:52.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015c9",
+        "patientId": 4,
+        "content": "Il se plaint également d'être essoufflé",
+        "date": ISODate("2024-01-25T14:28:16.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015ca",
+        "patientId": 4,
+        "content": "Tests de laboratoire indiquant que les anticorps sont élevés",
+        "date": ISODate("2024-02-12T09:15:33.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015cb",
+        "patientId": 4,
+        "content": "Réaction aux médicaments",
+        "date": ISODate("2024-02-28T15:50:44.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015cc",
+        "patientId": 4,
+        "content": "Le patient déclare qu'il a mal au dos lorsqu'il reste assis pendant longtemps",
+        "date": ISODate("2024-03-07T11:22:59.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015cd",
+        "patientId": 4,
+        "content": "Le patient déclare avoir commencé à fumer depuis peu",
+        "date": ISODate("2024-03-12T13:40:31.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015ce",
+        "patientId": 4,
+        "content": "Hémoglobine A1C supérieure au niveau recommandé",
+        "date": ISODate("2024-03-15T10:18:47.000Z"),
+        "createdBy": "_random"
+    },
+    {
+        "id": "67caf22ab9bda8fe4a1015cf",
+        "patientId": 4,
+        "content": "Taille, Poids, Cholestérol, Vertiges et Réaction",
+        "date": ISODate("2024-03-18T14:55:26.000Z"),
+        "createdBy": "_random"
+    }
+]);

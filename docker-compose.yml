@@ -14,10 +14,30 @@ services:
       - medilabo-network
     healthcheck:
       test: [ "CMD", "mysql","-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
-      interval: 3s
+      interval: 10s
       retries: 5
       timeout: 5s
 
+  # MongoDB Database (Local Only)
+  notes-db:
+    image: mongo:latest
+    container_name: notes-db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_LOCAL_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_LOCAL_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+    volumes:
+      - notes-db-data:/data/db
+      - ./services/ms-notes/src/main/resources/collections/notes.js:/docker-entrypoint-initdb.d/notes.js
+    ports:
+      - "27017:27017"
+    networks:
+      - medilabo-network
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Gateway Service
   ms-gateway:
@@ -62,11 +82,15 @@ services:
     ports:
       - "8083:8083"
     depends_on:
-      - ms-gateway
+      notes-db:
+        condition: service_healthy
     networks:
       - medilabo-network
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_DATABASE}?retryWrites=true&w=majority
+      - SPRING_DATA_MONGODB_URI=mongodb://${MONGODB_LOCAL_USER}:${MONGODB_LOCAL_PASSWORD}@notes-db:27017/${MONGODB_DATABASE}?authSource=admin
+    # You can uncomment this line to use MongoDB Atlas instead of local MongoDB
+    # - SPRING_DATA_MONGODB_URI=mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_DATABASE}?retryWrites=true&w=majority
+
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${KEYCLOAK_JWK_SET_URI}
 
@@ -105,3 +129,4 @@ networks:
 
 volumes:
   patient-db-data:
+  notes-db-data:
